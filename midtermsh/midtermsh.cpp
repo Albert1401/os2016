@@ -103,7 +103,6 @@ void line() {
 }
 
 void handler(int sig, siginfo_t *, void *) {
-    cerr << "1";
     for (int i = 0; i < childs.size(); i++) {
         kill(childs[i], sig);
     }
@@ -122,28 +121,26 @@ int main() {
 //    }
 
     ssize_t count = 0;
-    while (1) {
-        string str_command;
-        line();
-        while ((count = read(STDIN_FILENO, buff, buff_size)) > 0) {
-            str_command.append(buff, 0, count);
-            for (int i = 0; i < count; i++) {
-                if (buff[i] == '\n') {
-                    if (count - 1 > i) {
-                        write(STDIN_FILENO, buff + i + 1, count - i - 1);
-                    }
-                    str_command.erase(i);
-                    if (str_command != "") {
-
-                        execute(parse_expr(str_command));
-                    }
-                    line();
-                    str_command.clear();
-                    childs.clear();
-                    break;
+    string str_command;
+    line();
+    while ((count = read(STDIN_FILENO, buff, buff_size)) > 0) {
+        str_command.append(buff, 0, count);
+        for (int i = 0; i < count; i++) {
+            if (buff[i] == '\n') {
+                if (count - 1 > i) {
+                    write(STDIN_FILENO, buff + i + 1, count - i - 1);
                 }
-            }
+                str_command.erase(i);
+                if (str_command != "") {
 
+                    execute(parse_expr(str_command));
+                }
+                line();
+                str_command.clear();
+                childs.clear();
+                break;
+            }
         }
+
     }
 }

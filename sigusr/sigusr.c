@@ -21,7 +21,12 @@ int main(int argc, char **argv) {
     action.sa_mask = mask;
 
     sigprocmask(SIG_SETMASK, &mask, NULL);
+
+    sigaddset(&mask, SIGUSR2);
     sigaction(SIGUSR1, &action, NULL);
+    sigdelset(&mask, SIGUSR2);
+    sigaddset(&mask, SIGUSR1);
+
     sigaction(SIGUSR2, &action, NULL);
 
     sleep(10);
